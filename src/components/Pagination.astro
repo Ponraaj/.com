@@ -1,0 +1,55 @@
+---
+interface Props {
+  page: number;
+  totalPages: number;
+  basePath: string;
+}
+
+const { page, totalPages, basePath } = Astro.props;
+
+function pageHref(p: number) {
+  if (p === 1) return basePath;
+  return `${basePath}/${p}`;
+}
+---
+
+{
+  totalPages > 1 && (
+    <nav
+      class="mt-20 pt-12 border-t border-border flex items-center justify-between"
+      aria-label="Pagination"
+    >
+      {page > 1 ? (
+        <a
+          href={pageHref(page - 1)}
+          class="relative group text-foreground hover:text-primary transition-colors duration-300 text-sm"
+        >
+          <span class="relative">
+            ← Previous
+            <span class="absolute left-0 bottom-0 w-0 h-px bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+          </span>
+        </a>
+      ) : (
+        <span />
+      )}
+
+      <span class="text-sm text-subtle">
+        Page {page} of {totalPages}
+      </span>
+
+      {page < totalPages ? (
+        <a
+          href={pageHref(page + 1)}
+          class="relative group text-foreground hover:text-primary transition-colors duration-300 text-sm"
+        >
+          <span class="relative">
+            Next →
+            <span class="absolute left-0 bottom-0 w-0 h-px bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+          </span>
+        </a>
+      ) : (
+        <span />
+      )}
+    </nav>
+  )
+}

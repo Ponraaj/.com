@@ -1,0 +1,242 @@
+---
+export const prerender = true;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About" image="/og/about.png">
+  <div class="min-h-screen page-bg">
+    <div class="max-w-3xl mx-auto px-6 py-40">
+      <h1 class="text-5xl md:text-6xl mb-6 text-heading font-light tracking-tight">
+        About
+      </h1>
+
+      <div class="space-y-20">
+        <div class="space-y-6 text-lg leading-relaxed text-foreground">
+          <p class="indent-4">
+            I'm Pon Raaj V, a software developer from Chennai, India. Currently
+            studying Computer Science at Chennai Institute of Technology.
+          </p>
+          <p class="indent-4">
+            I build things with Python, Kotlin, Go, TypeScript, and React. I care about
+            making software that actually works well and doesn't look terrible.
+          </p>
+        </div>
+
+        <div class="sticky-section">
+          <h2 class="sticky-heading text-3xl font-light text-section-heading mb-6">Skills</h2>
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-sm uppercase tracking-wider text-muted mb-2">Languages</h3>
+              <div class="flex flex-wrap gap-x-4 gap-y-2 text-foreground">
+                <span>TypeScript</span>
+                <span>Go</span>
+                <span>Python</span>
+                <span>SQL</span>
+                <span>C++</span>
+                <span>Kotlin</span>
+                <span>Bash</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm uppercase tracking-wider text-muted mb-2">Frameworks</h3>
+              <div class="flex flex-wrap gap-x-4 gap-y-2 text-foreground">
+                <span>React</span>
+                <span>Next.js</span>
+                <span>LangChain</span>
+                <span>LangGraph</span>
+                <span>Google ADK</span>
+                <span>Node.js</span>
+                <span>Gin</span>
+                <span>Espresso</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm uppercase tracking-wider text-muted mb-2">Tools</h3>
+              <div class="flex flex-wrap gap-x-4 gap-y-2 text-foreground">
+                <span>Git</span>
+                <span>Docker</span>
+                <span>Gradle</span>
+                <span>Android Studio</span>
+                <span>WebSockets</span>
+                <span>WebRTC</span>
+                <span>Redis</span>
+                <span>GitHub Actions</span>
+                <span>Linux</span>
+                <span>NeoVim</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-section">
+          <h2 class="sticky-heading text-3xl font-light text-section-heading mb-6">Experience</h2>
+          <div class="space-y-8">
+            <div>
+              <div class="flex justify-between items-baseline mb-1">
+                <h3 class="text-heading">
+                  Software Engineering Intern — Microsoft
+                </h3>
+                <span class="text-sm text-muted">May 2026 — July 2026</span>
+              </div>
+              <p class="text-foreground leading-relaxed">
+                Migrated the internal test harness for Android UI components
+                from an internal build system to Gradle. Built a test-toolkit for easier
+                test authoring, migrated the legacy test suite to new test infra, and
+                improved reliability from ~83% to 99.9% with 13x faster execution enabling 
+                to catch regressions in PR.
+              </p>
+            </div>
+            <div>
+              <div class="flex justify-between items-baseline mb-1">
+                <h3 class="text-heading">
+                  Software Engineering Intern (Gen AI) — Cognizant
+                </h3>
+                <span class="text-sm text-muted">July 2025 — Feb 2026</span>
+              </div>
+              <p class="text-foreground leading-relaxed">
+                Built multi-agent systems with LangGraph and Google's ADK. Engineered
+                real-time voice agents using OpenAI Realtime models over WebRTC.
+              </p>
+            </div>
+            <div>
+              <div class="flex justify-between items-baseline mb-1">
+                <h3 class="text-heading">
+                  Development Team — Hackerz-25 Technical Symposium
+                </h3>
+                <span class="text-sm text-muted">Dec 2024 — Jan 2025</span>
+              </div>
+              <p class="text-foreground leading-relaxed">
+                Built an automated email system using Google's SMTP server, delivering 6,000+
+                emails with 93% inbox delivery rate. Developed a treasury management system for
+                tracking transactions, budgeting, and fund allocation.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-section">
+          <h2 class="sticky-heading text-3xl font-light text-section-heading mb-6">Projects</h2>
+          <div class="space-y-8">
+            <div>
+              <div class="flex justify-between items-baseline mb-1">
+                <h3 class="text-heading">File-Share</h3>
+                <span class="text-xs text-muted">TypeScript, WebRTC, WebSockets, Bun</span>
+              </div>
+              <p class="text-foreground leading-relaxed mb-3">
+                Peer-to-peer file sharing over WebRTC data channels with a minimal
+                WebSocket signaling server. Chunk-based transfers with buffer control,
+                reassembly, and progress updates.
+              </p>
+              <a
+                href="https://github.com/Ponraaj/file-share"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="relative group inline-flex items-center gap-1 text-muted hover:text-primary transition-colors duration-300 text-sm"
+              >
+                <span class="relative">
+                  GitHub
+                  <span class="absolute left-0 bottom-0 w-0 h-px bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+                </span>
+                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>
+              </a>
+            </div>
+            <div>
+              <div class="flex justify-between items-baseline mb-1">
+                <h3 class="text-heading">D4C (Download Manager)</h3>
+                <span class="text-xs text-muted">Go, Wails, React, SQLite</span>
+              </div>
+              <p class="text-foreground leading-relaxed mb-3">
+                Cross-platform native desktop download manager with pause, resume, and
+                cancel support. Concurrent chunk downloads via Go routine thread pool.
+              </p>
+              <a
+                href="https://github.com/Ponraaj/d4c"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="relative group inline-flex items-center gap-1 text-muted hover:text-primary transition-colors duration-300 text-sm"
+              >
+                <span class="relative">
+                  GitHub
+                  <span class="absolute left-0 bottom-0 w-0 h-px bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+                </span>
+                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>
+              </a>
+            </div>
+            <div>
+              <div class="flex justify-between items-baseline mb-1">
+                <h3 class="text-heading">Contest-Tracker</h3>
+                <span class="text-xs text-muted">Next.js, Node.js, PostgreSQL, Redis, Docker</span>
+              </div>
+              <p class="text-foreground leading-relaxed mb-3">
+                Fetches LeetCode, CodeChef, and Codeforces contest data in real time.
+                Contest counts, ratings, and analysis graphs for cross-platform tracking.
+              </p>
+              <a
+                href="https://github.com/Ponraaj/contest-tracker-be"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="relative group inline-flex items-center gap-1 text-muted hover:text-primary transition-colors duration-300 text-sm"
+              >
+                <span class="relative">
+                  GitHub
+                  <span class="absolute left-0 bottom-0 w-0 h-px bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+                </span>
+                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-section">
+          <h2 class="sticky-heading text-3xl font-light text-section-heading mb-6">Competitive Programming</h2>
+          <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <a href="https://leetcode.com/u/ponraaj/" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-primary transition-colors">LeetCode</a>
+            <a href="https://codeforces.com/profile/ponraajv" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-primary transition-colors">Codeforces</a>
+            <a href="https://www.codechef.com/users/ponraaj" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-primary transition-colors">CodeChef</a>
+          </div>
+        </div>
+
+        <div class="sticky-section">
+          <h2 class="sticky-heading text-3xl font-light text-section-heading mb-6">Connect</h2>
+          <div class="flex flex-wrap gap-6 sm:gap-8">
+            <a
+              href="mailto:ponraajvetrivel@gmail.com"
+              class="group flex items-center gap-2 text-muted hover:text-primary transition-colors duration-300"
+              aria-label="Email"
+            >
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+            </a>
+            <a
+              href="https://x.com/PonraajV"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex items-center gap-2 text-muted hover:text-primary transition-colors duration-300"
+              aria-label="Twitter"
+            >
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+            </a>
+            <a
+              href="https://github.com/Ponraaj"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex items-center gap-2 text-muted hover:text-primary transition-colors duration-300"
+              aria-label="GitHub"
+            >
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" /><path d="M9 18c-4.51 2-5-2-7-2" /></svg>
+            </a>
+            <a
+              href="https://linkedin.com/in/Ponraaj"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex items-center gap-2 text-muted hover:text-primary transition-colors duration-300"
+              aria-label="LinkedIn"
+            >
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,61 @@
+---
+import { Image } from 'astro:assets';
+import type { BlogPost } from '@lib/posts';
+import { calculateReadTime, formatDate } from '@lib/posts';
+
+interface Props {
+  post: BlogPost;
+  loading?: 'lazy' | 'eager';
+}
+
+const { post, loading = 'lazy' } = Astro.props;
+const readTime = calculateReadTime(post.body ?? '');
+const slug = post.id;
+---
+
+<article class="border-0 shadow-none bg-transparent">
+  <a href={`/posts/${slug}`} class="group block">
+    {
+      post.data.image && (
+        <div class="mb-4 overflow-hidden rounded-lg">
+          <Image
+            src={post.data.image}
+            alt={post.data.title}
+            width="800"
+            height="256"
+            loading={loading}
+            class="w-full h-64 object-cover rounded-lg transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+            style={`view-transition-name: post-image-${slug}`}
+          />
+        </div>
+      )
+    }
+    <div class="flex items-center gap-3 text-sm text-subtle mb-3">
+      <time datetime={post.data.publishedAt.toISOString()}>
+        {formatDate(post.data.publishedAt)}
+      </time>
+      <span>·</span>
+      <span>{readTime} min read</span>
+    </div>
+    <h3
+      class="text-2xl md:text-3xl mb-4 text-foreground font-light tracking-tight group-hover:text-primary transition-colors duration-300"
+      style={`view-transition-name: post-title-${slug}`}
+    >
+      <span class="relative">
+        {post.data.title}
+        <span class="absolute left-0 bottom-0 w-0 h-px bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+      </span>
+    </h3>
+    <p class="text-subtle leading-relaxed mb-4">{post.data.excerpt}</p>
+
+    <div class="flex flex-wrap gap-4">
+      {
+        post.data.tags.map((tag) => (
+          <span class="text-xs text-subtle uppercase tracking-wider transition-colors duration-300 group-hover:text-primary">
+            {tag}
+          </span>
+        ))
+      }
+    </div>
+  </a>
+</article>

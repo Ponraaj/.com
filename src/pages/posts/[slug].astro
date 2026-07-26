@@ -1,0 +1,203 @@
+---
+export const prerender = true;
+
+import { getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/PostCard.astro';
+import ViewCounter from '@components/ViewCounter.astro';
+import LikeButton from '@components/LikeButton.astro';
+import {
+  calculateReadTime,
+  formatDate,
+  getAdjacentPosts,
+  getPublishedPosts,
+  getRelatedPosts,
+} from '@lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await getEntry('blog', slug!);
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+const allPosts = await getPublishedPosts();
+const { Content } = await render(post);
+const readTime = calculateReadTime(post.body ?? '');
+const { previous, next } = getAdjacentPosts(slug!, allPosts);
+const related = getRelatedPosts(post, allPosts);
+const canonical = `https://ponraaj.me/posts/${slug}`;
+const ogImage = `https://ponraaj.me/og/${slug}.png`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.excerpt,
+  author: { '@type': 'Person', name: post.data.author },
+  publisher: { '@type': 'Person', name: 'Pon Raaj V' },
+  datePublished: post.data.publishedAt.toISOString(),
+  dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
+  keywords: post.data.tags.join(', '),
+  image: ogImage,
+  url: canonical,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+};
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.excerpt}
+  image={ogImage}
+  canonical={canonical}
+  type="article"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <div
+    id="reading-progress"
+    class="fixed top-0 left-0 w-full h-1 z-50 pointer-events-none"
+    aria-hidden="true"
+  >
+    <div id="reading-progress-bar" class="h-full bg-primary w-full" style="transform: scaleX(0)" />
+  </div>
+
+  <main class="min-h-screen page-bg">
+    <article class="max-w-4xl mx-auto px-6 py-16 md:py-40">
+      <header class="mb-12">
+        <Image
+          src={post.data.image}
+          alt={post.data.title}
+          width="1200"
+          height="480"
+          loading="eager"
+          class="w-full h-64 md:h-80 object-cover rounded-lg mb-8"
+          style={`view-transition-name: post-image-${slug}`}
+        />
+        <h1
+          class="text-5xl md:text-6xl mb-6 text-foreground font-light tracking-tight leading-tight"
+          style={`view-transition-name: post-title-${slug}`}
+        >
+          {post.data.title}
+        </h1>
+        <div class="text-subtle border-b border-border pb-6">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div class="flex items-center gap-4">
+              <span class="text-sm">By {post.data.author}</span>
+              <span class="text-sm text-subtle">·</span>
+              <span class="text-sm">{readTime} min read</span>
+              <span class="text-sm text-subtle">·</span>
+              <ViewCounter slug={slug!} />
+              <span class="text-sm text-subtle">·</span>
+              <LikeButton slug={slug!} />
+            </div>
+            <time datetime={post.data.publishedAt.toISOString()} class="text-sm">
+              {formatDate(post.data.publishedAt)}
+            </time>
+          </div>
+          <div class="flex flex-wrap gap-4">
+            {
+              post.data.tags.map((tag) => (
+                <a
+                  href={`/blog/tags/${encodeURIComponent(tag.toLowerCase())}`}
+                  class="text-xs text-subtle uppercase tracking-wider hover:text-primary transition-colors"
+                >
+                  {tag}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </header>
+
+      <div class="prose prose-lg max-w-none">
+        <Content />
+      </div>
+
+      {
+        related.length > 0 && (
+          <section class="mt-20 pt-12 border-t border-border">
+            <h2 class="text-3xl mb-12 text-foreground font-light">Related posts</h2>
+            <div class="space-y-20">
+              {related.map((relatedPost) => (
+                <PostCard post={relatedPost} />
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <nav class="flex flex-col sm:flex-row items-center justify-between mt-20 pt-12 border-t border-border gap-6 sm:gap-4">
+        <div class="flex-1 min-w-0 w-full sm:w-auto">
+          {
+            previous ? (
+              <a
+                href={`/posts/${previous.id}`}
+                class="group inline-flex items-center gap-3 text-subtle hover:text-primary transition-colors duration-300"
+              >
+                <svg class="w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+                <div class="min-w-0">
+                  <div class="text-sm uppercase tracking-wide">Previous</div>
+                  <div
+                    class="relative font-medium truncate"
+                    style={`view-transition-name: post-title-${previous.id}`}
+                  >
+                    <span class="relative">
+                      {previous.data.title}
+                      <span class="absolute left-0 bottom-0 w-0 h-px bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+                    </span>
+                  </div>
+                </div>
+              </a>
+            ) : (
+              <div />
+            )
+          }
+        </div>
+
+        <a
+          href="/"
+          class="text-subtle hover:text-primary transition-colors duration-300 order-3 sm:order-2"
+          aria-label="Home"
+        >
+          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+        </a>
+
+        <div class="flex-1 min-w-0 w-full sm:w-auto text-right order-2 sm:order-3">
+          {
+            next ? (
+              <a
+                href={`/posts/${next.id}`}
+                class="group inline-flex items-center justify-end gap-3 text-subtle hover:text-primary transition-colors duration-300"
+              >
+                <div class="min-w-0 text-right">
+                  <div class="text-sm uppercase tracking-wide">Next</div>
+                  <div
+                    class="relative font-medium truncate"
+                    style={`view-transition-name: post-title-${next.id}`}
+                  >
+                    <span class="relative">
+                      {next.data.title}
+                      <span class="absolute left-0 bottom-0 w-0 h-px bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+                    </span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </a>
+            ) : (
+              <div />
+            )
+          }
+        </div>
+      </nav>
+    </article>
+  </main>
+</BaseLayout>

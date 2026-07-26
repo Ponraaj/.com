@@ -1,5 +1,6 @@
 node_modules
 .DS_Store
+.astro
 dist
 dist-ssr
 *.local
@@ -13,3 +14,5 @@ todos.json
 .vscode
 .wrangler
 dist
+.content-collections
+worker-configuration.d.ts

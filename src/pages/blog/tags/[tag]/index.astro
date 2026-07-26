@@ -1,0 +1,67 @@
+---
+export const prerender = true;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/PostCard.astro';
+import Pagination from '@components/Pagination.astro';
+import {
+  filterPostsByTag,
+  getAllTags,
+  getPublishedPosts,
+  paginatePosts,
+} from '@lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const tags = getAllTags(posts);
+
+  return tags.map((tag) => ({
+    params: { tag: tag.toLowerCase() },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props;
+const allPosts = await getPublishedPosts();
+const tagged = filterPostsByTag(allPosts, tag);
+const { posts, page, totalPages } = paginatePosts(tagged, 1);
+const basePath = `/blog/tags/${tag.toLowerCase()}`;
+---
+
+<BaseLayout
+  title={`Posts tagged "${tag}"`}
+  description={`Blog posts tagged with ${tag}`}
+  canonical={`https://ponraaj.me${basePath}`}
+>
+  <div class="min-h-screen page-bg">
+    <div class="max-w-3xl mx-auto px-6 py-40">
+      <header class="mb-24">
+        <p class="text-sm uppercase tracking-wider text-subtle mb-4">Tag</p>
+        <h1 class="text-5xl md:text-6xl mb-6 text-foreground font-light tracking-tight">
+          {tag}
+        </h1>
+        <p class="text-lg text-subtle leading-relaxed">
+          {tagged.length} post{tagged.length !== 1 ? 's' : ''}
+        </p>
+      </header>
+
+      <div class="space-y-20">
+        {posts.map((post) => <PostCard post={post} />)}
+      </div>
+
+      <Pagination page={page} totalPages={totalPages} basePath={basePath} />
+
+      <div class="mt-12">
+        <a
+          href="/blog"
+          class="relative group text-foreground hover:text-primary transition-colors duration-300 text-sm"
+        >
+          <span class="relative">
+            ← All posts
+            <span class="absolute left-0 bottom-0 w-0 h-px bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

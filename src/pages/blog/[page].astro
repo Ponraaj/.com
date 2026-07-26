@@ -1,0 +1,58 @@
+---
+export const prerender = true;
+
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/PostCard.astro';
+import Pagination from '@components/Pagination.astro';
+import { getPublishedPosts, paginatePosts } from '@lib/posts';
+
+export async function getStaticPaths() {
+  const allPosts = await getPublishedPosts();
+  const totalPages = Math.max(1, Math.ceil(allPosts.length / 10));
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => {
+    const page = i + 2;
+    return {
+      params: { page: String(page) },
+      props: { page },
+    };
+  });
+}
+
+const { page } = Astro.props;
+const allPosts = await getPublishedPosts();
+const pagination = paginatePosts(allPosts, page);
+
+if (page < 2 || page > pagination.totalPages) {
+  return Astro.redirect('/404');
+}
+---
+
+<BaseLayout
+  title={`Blog — Page ${page}`}
+  description="Just some thoughts and scribblings"
+  canonical={`https://ponraaj.me/blog/${page}`}
+>
+  <div class="min-h-screen page-bg">
+    <div class="max-w-3xl mx-auto px-6 py-40">
+      <header class="mb-24">
+        <h1 class="text-5xl md:text-6xl mb-6 text-foreground font-light tracking-tight" style="view-transition-name: page-heading">
+          Blog
+        </h1>
+        <p class="text-lg text-subtle leading-relaxed">
+          Thoughts on technology, development, and life
+        </p>
+      </header>
+
+      <div class="space-y-20">
+        {pagination.posts.map((post) => <PostCard post={post} />)}
+      </div>
+
+      <Pagination
+        page={pagination.page}
+        totalPages={pagination.totalPages}
+        basePath="/blog"
+      />
+    </div>
+  </div>
+</BaseLayout>

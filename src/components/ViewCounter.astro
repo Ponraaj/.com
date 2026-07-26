@@ -1,0 +1,39 @@
+---
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+---
+
+<span data-view-counter={slug} class="text-sm text-subtle">0 views</span>
+
+<script>
+  // @ts-nocheck
+  function initViewCounters() {
+    document.querySelectorAll('[data-view-counter]').forEach(function (el) {
+      var slug = el.getAttribute('data-view-counter');
+      var viewedKey = 'viewed:' + slug;
+
+      async function updateView() {
+        try {
+          if (!sessionStorage.getItem(viewedKey)) {
+            await fetch('/api/views/' + slug, { method: 'POST' });
+            sessionStorage.setItem(viewedKey, '1');
+          }
+        } catch {}
+
+        try {
+          var res = await fetch('/api/views/' + slug);
+          var data = await res.json();
+          el.textContent = data.count + ' ' + (data.count === 1 ? 'view' : 'views');
+        } catch {}
+      }
+
+      updateView();
+    });
+  }
+
+  initViewCounters();
+  document.addEventListener('astro:page-load', initViewCounters);
+</script>

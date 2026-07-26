@@ -1,0 +1,128 @@
+---
+---
+
+<button id="search-toggle" type="button" class="text-subtle hover:text-foreground transition-colors" aria-label="Search posts">
+  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.3-4.3" />
+  </svg>
+</button>
+
+<div id="search-overlay" class="fixed inset-0 z-40 hidden" aria-hidden="true">
+  <div id="search-backdrop" class="absolute inset-0 bg-black/50" />
+  <div class="absolute top-0 left-0 right-0 header-bg border-b border-subtle shadow-lg">
+    <div class="max-w-2xl mx-auto px-4 py-4">
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-subtle pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <input
+          id="search-input"
+          type="search"
+          placeholder="Search posts..."
+          class="w-full pl-10 pr-4 py-3 bg-surface border border-border rounded-lg text-foreground placeholder:text-subtle focus:outline-none transition-colors"
+          autocomplete="off"
+          aria-label="Search posts"
+          aria-controls="search-results"
+        />
+      </div>
+      <div id="search-results" class="mt-2 max-h-96 overflow-y-auto" role="listbox" aria-label="Search results" />
+    </div>
+  </div>
+</div>
+
+<script>
+  // @ts-nocheck
+  const toggle = document.getElementById('search-toggle');
+  const overlay = document.getElementById('search-overlay');
+  const backdrop = document.getElementById('search-backdrop');
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
+
+  let debounceTimer;
+
+  function openOverlay() {
+    overlay.classList.remove('hidden');
+    overlay.setAttribute('aria-hidden', 'false');
+    setTimeout(() => input.focus(), 100);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeOverlay() {
+    overlay.classList.add('hidden');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    input.value = '';
+    results.innerHTML = '';
+  }
+
+  function escapeFts(value) {
+    return value.replace(/[^\w\s-]/g, '').trim();
+  }
+
+  function renderResults(data) {
+    if (data.results.length === 0) {
+      results.innerHTML = `<p class="text-sm text-subtle px-3 py-4 text-center">No results for "${escapeFts(data.query)}"</p>`;
+      return;
+    }
+
+    results.innerHTML = data.results
+      .map(
+        (r) => `
+          <a href="${r.url}" class="block px-3 py-3 rounded-lg hover:bg-surface transition-colors group" role="option" aria-selected="false">
+            <div class="text-sm font-medium text-foreground group-hover:text-primary transition-colors">${r.title}</div>
+            <div class="text-xs text-subtle mt-0.5 line-clamp-1">${r.excerpt}</div>
+            <div class="flex flex-wrap gap-2 mt-1.5">
+              ${r.tags.map((t) => `<span class="text-[10px] uppercase tracking-wider text-subtle">${t}</span>`).join('')}
+            </div>
+          </a>
+        `
+      )
+      .join('');
+  }
+
+  async function doSearch(query) {
+    if (!query.trim()) {
+      results.innerHTML = '';
+      return;
+    }
+
+    results.innerHTML = '<p class="text-sm text-subtle px-3 py-4 text-center">Searching...</p>';
+
+    try {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      renderResults(data);
+    } catch {
+      results.innerHTML = '<p class="text-sm text-subtle px-3 py-4 text-center">Search failed. Try again.</p>';
+    }
+  }
+
+  toggle.addEventListener('click', openOverlay);
+
+  backdrop.addEventListener('click', closeOverlay);
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeOverlay();
+    }
+  });
+
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    const query = input.value;
+    debounceTimer = setTimeout(() => doSearch(query), 200);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      if (overlay.getAttribute('aria-hidden') === 'true') {
+        openOverlay();
+      } else {
+        closeOverlay();
+      }
+    }
+  });
+</script>

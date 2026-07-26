@@ -1,0 +1,107 @@
+---
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+---
+
+<button
+  data-like-button={slug}
+  class="inline-flex items-center gap-1.5 text-sm text-subtle hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+  disabled
+  aria-label="Like this post"
+>
+  <svg class="w-4 h-4 heart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+  </svg>
+  <span class="like-count">0</span>
+</button>
+
+<script>
+  // @ts-nocheck
+  function getVisitorId() {
+    var id = localStorage.getItem('visitorId');
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem('visitorId', id);
+    }
+    return id;
+  }
+
+  function initLikeButtons() {
+    document.querySelectorAll('[data-like-button]').forEach(function (btn) {
+      var slug = btn.getAttribute('data-like-button');
+      var countEl = btn.querySelector('.like-count');
+      var iconEl = btn.querySelector('.heart-icon');
+      var visitorId = getVisitorId();
+      var liked = false;
+      var count = 0;
+      var inFlight = false;
+
+      function updateUI() {
+        if (countEl) countEl.textContent = String(count);
+        if (liked) {
+          if (iconEl) iconEl.setAttribute('fill', 'currentColor');
+          btn.setAttribute('aria-label', 'Unlike this post');
+        } else {
+          if (iconEl) iconEl.setAttribute('fill', 'none');
+          btn.setAttribute('aria-label', 'Like this post');
+        }
+      }
+
+      async function load() {
+        try {
+          var res = await fetch('/api/likes/' + slug + '?visitorId=' + encodeURIComponent(visitorId));
+          var data = await res.json();
+          liked = data.liked;
+          count = data.count;
+          btn.disabled = false;
+          updateUI();
+        } catch (e) {
+          btn.disabled = false;
+        }
+      }
+
+      btn.addEventListener('click', async function () {
+        if (inFlight) return;
+        inFlight = true;
+        btn.disabled = true;
+
+        var prevLiked = liked;
+        var prevCount = count;
+
+        liked = !liked;
+        count = liked ? count + 1 : count - 1;
+        updateUI();
+
+        try {
+          var res = await fetch('/api/likes/' + slug, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              visitorId: visitorId,
+              action: liked ? 'like' : 'unlike',
+            }),
+          });
+          var data = await res.json();
+          liked = data.liked;
+          count = data.count;
+          updateUI();
+        } catch (e) {
+          liked = prevLiked;
+          count = prevCount;
+          updateUI();
+        } finally {
+          inFlight = false;
+          btn.disabled = false;
+        }
+      });
+
+      load();
+    });
+  }
+
+  initLikeButtons();
+  document.addEventListener('astro:page-load', initLikeButtons);
+</script>
