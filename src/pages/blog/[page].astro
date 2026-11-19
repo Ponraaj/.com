@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 
+import { siteUrl } from '@lib/site';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import PostCard from '@components/PostCard.astro';
 import Pagination from '@components/Pagination.astro';
@@ -31,7 +32,7 @@ if (page < 2 || page > pagination.totalPages) {
 <BaseLayout
   title={`Blog — Page ${page}`}
   description="Just some thoughts and scribblings"
-  canonical={`https://ponraaj.me/blog/${page}`}
+  canonical={new URL(`/blog/${page}`, siteUrl(Astro.site)).href}
 >
   <div class="min-h-screen page-bg">
     <div class="max-w-3xl mx-auto px-6 py-40">

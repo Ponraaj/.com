@@ -11,7 +11,7 @@ export class PostLikes extends DurableObject<Env> {
       `CREATE TABLE IF NOT EXISTS likes (
         visitor_id TEXT PRIMARY KEY,
         created_at INTEGER NOT NULL
-      )`
+      )`,
     );
   }
 
@@ -23,9 +23,10 @@ export class PostLikes extends DurableObject<Env> {
   }
 
   private isLiked(visitorId: string): boolean {
-    const rows = this.sql!
-      .exec('SELECT 1 FROM likes WHERE visitor_id = ?', visitorId)
-      .toArray();
+    const rows = this.sql!.exec(
+      'SELECT 1 FROM likes WHERE visitor_id = ?',
+      visitorId,
+    ).toArray();
     return rows.length > 0;
   }
 
@@ -47,23 +48,21 @@ export class PostLikes extends DurableObject<Env> {
       };
 
       if (body.action === 'like') {
-        this.sql!
-          .exec(
-            'INSERT OR IGNORE INTO likes (visitor_id, created_at) VALUES (?, ?)',
-            body.visitorId,
-            Date.now()
-          );
+        this.sql!.exec(
+          'INSERT OR IGNORE INTO likes (visitor_id, created_at) VALUES (?, ?)',
+          body.visitorId,
+          Date.now(),
+        );
       } else if (body.action === 'unlike') {
-        this.sql!
-          .exec('DELETE FROM likes WHERE visitor_id = ?', body.visitorId);
+        this.sql!.exec(
+          'DELETE FROM likes WHERE visitor_id = ?',
+          body.visitorId,
+        );
       }
 
       return Response.json({
         count: this.getCount(),
-        liked:
-          body.action === 'like'
-            ? this.isLiked(body.visitorId)
-            : false,
+        liked: body.action === 'like' ? this.isLiked(body.visitorId) : false,
       });
     }
 
@@ -75,8 +74,21 @@ export default {
   async fetch(
     request: Request,
     env: Env,
-    ctx: ExecutionContext
+    ctx: ExecutionContext,
   ): Promise<Response> {
+    const url = new URL(request.url);
+    // One canonical origin. The old .me domain, its www alias, and the www
+    // alias of the new domain all 301 here; paths and query strings survive.
+    if (
+      url.hostname === 'ponraaj.me' ||
+      url.hostname === 'www.ponraaj.me' ||
+      url.hostname === 'www.ponraaj.com'
+    ) {
+      return Response.redirect(
+        `https://ponraaj.com${url.pathname}${url.search}`,
+        301,
+      );
+    }
     return handle(request, env, ctx);
   },
 } satisfies ExportedHandler<Env>;

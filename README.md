@@ -1,4 +1,4 @@
-# ponraaj.me
+# ponraaj.com
 
 Personal site and blog built with Astro 7, MDX, Tailwind CSS, and the Cloudflare adapter.
 

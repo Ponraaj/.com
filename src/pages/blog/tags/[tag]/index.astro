@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 
+import { siteUrl } from '@lib/site';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import PostCard from '@components/PostCard.astro';
 import Pagination from '@components/Pagination.astro';
@@ -31,7 +32,7 @@ const basePath = `/blog/tags/${tag.toLowerCase()}`;
 <BaseLayout
   title={`Posts tagged "${tag}"`}
   description={`Blog posts tagged with ${tag}`}
-  canonical={`https://ponraaj.me${basePath}`}
+  canonical={new URL(basePath, siteUrl(Astro.site)).href}
 >
   <div class="min-h-screen page-bg">
     <div class="max-w-3xl mx-auto px-6 py-40">

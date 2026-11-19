@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 
+import { siteUrl } from '@lib/site';
 import { getEntry, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '@layouts/BaseLayout.astro';
@@ -34,8 +35,9 @@ const { Content } = await render(post);
 const readTime = calculateReadTime(post.body ?? '');
 const { previous, next } = getAdjacentPosts(slug!, allPosts);
 const related = getRelatedPosts(post, allPosts);
-const canonical = `https://ponraaj.me/posts/${slug}`;
-const ogImage = `https://ponraaj.me/og/${slug}.png`;
+const site = siteUrl(Astro.site);
+const canonical = new URL(`/posts/${slug}`, site).href;
+const ogImage = new URL(`/og/${slug}.png`, site).href;
 
 const jsonLd = {
   '@context': 'https://schema.org',
