@@ -77,13 +77,9 @@ export default {
     ctx: ExecutionContext,
   ): Promise<Response> {
     const url = new URL(request.url);
-    // One canonical origin. The old .me domain, its www alias, and the www
-    // alias of the new domain all 301 here; paths and query strings survive.
-    if (
-      url.hostname === 'ponraaj.me' ||
-      url.hostname === 'www.ponraaj.me' ||
-      url.hostname === 'www.ponraaj.com'
-    ) {
+    // One canonical origin. The www alias 301s to the apex; paths and query
+    // strings survive.
+    if (url.hostname === 'www.ponraaj.com') {
       return Response.redirect(
         `https://ponraaj.com${url.pathname}${url.search}`,
         301,
