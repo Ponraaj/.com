@@ -7,8 +7,6 @@
   "routes": [
     { "pattern": "ponraaj.com/*", "zone_name": "ponraaj.com" },
     { "pattern": "www.ponraaj.com/*", "zone_name": "ponraaj.com" },
-    { "pattern": "ponraaj.me/*", "zone_name": "ponraaj.me" },
-    { "pattern": "www.ponraaj.me/*", "zone_name": "ponraaj.me" },
   ],
   "preview_urls": true,
   "assets": {
