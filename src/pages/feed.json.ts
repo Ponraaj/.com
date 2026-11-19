@@ -1,11 +1,12 @@
+import { siteUrl } from '@lib/site';
 import type { APIRoute } from 'astro';
 import { getPublishedPosts } from '@lib/posts';
 
 export const prerender = true;
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async (context) => {
   const posts = await getPublishedPosts();
-  const site = 'https://ponraaj.me';
+  const site = siteUrl(context.site).origin;
 
   const feed = {
     version: 'https://jsonfeed.org/version/1.1',

@@ -22,7 +22,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ponraaj.me';
+const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://ponraaj.com';
 const pageTitle = title;
 const ogImage = image.startsWith('http') ? image : `${site}${image}`;
 const canonicalUrl = canonical ?? Astro.url.href;

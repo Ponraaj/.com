@@ -1,56 +1,57 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "portfolio",
-	"compatibility_date": "2026-07-01",
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
-	"main": "./src/workers/index.ts",
-	"route": "ponraaj.me/*",
-	"preview_urls": true,
-	"assets": {
-		"directory": "./dist",
-		"binding": "ASSETS",
-		"not_found_handling": "404-page",
-	},
-	"observability": {
-		"enabled": true,
-	},
-	"images": {
-		"binding": "IMAGES",
-	},
-	"kv_namespaces": [
-		{
-			"binding": "VIEWS",
-			"id": "9a0e5617ffa04b23b9d162c236306354",
-		},
-		{
-			"binding": "SESSION",
-			"id": "e94cdb674f3b4a309633b0a677a0d162",
-		},
-	],
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "portfolio-search",
-			"database_id": "3fa576aa-f480-45b2-b4d4-29c3e2bb421f",
-			"migrations_dir": "migrations",
-		},
-	],
-	"durable_objects": {
-		"bindings": [
-			{
-				"name": "POST_LIKES",
-				"class_name": "PostLikes"
-			}
-		],
-	},
-	"migrations": [
-		{
-			"tag": "v1",
-			"new_sqlite_classes": [
-				"PostLikes"
-			]
-		}
-	],
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "portfolio",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./src/workers/index.ts",
+  "routes": [
+    { "pattern": "ponraaj.com/*", "zone_name": "ponraaj.com" },
+    { "pattern": "www.ponraaj.com/*", "zone_name": "ponraaj.com" },
+    { "pattern": "ponraaj.me/*", "zone_name": "ponraaj.me" },
+    { "pattern": "www.ponraaj.me/*", "zone_name": "ponraaj.me" },
+  ],
+  "preview_urls": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "images": {
+    "binding": "IMAGES",
+  },
+  "kv_namespaces": [
+    {
+      "binding": "VIEWS",
+      "id": "9a0e5617ffa04b23b9d162c236306354",
+    },
+    {
+      "binding": "SESSION",
+      "id": "e94cdb674f3b4a309633b0a677a0d162",
+    },
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "portfolio-search",
+      "database_id": "3fa576aa-f480-45b2-b4d4-29c3e2bb421f",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "POST_LIKES",
+        "class_name": "PostLikes",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["PostLikes"],
+    },
+  ],
 }

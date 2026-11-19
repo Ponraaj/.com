@@ -10,7 +10,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import postBuild from './src/integrations/post-build';
 
 export default defineConfig({
-  site: 'https://ponraaj.me',
+  site: 'https://ponraaj.com',
   output: 'server',
   adapter: cloudflare({
     imageService: 'cloudflare-binding',
